@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.ensemble import StackingClassifier, RandomForestClassifier
+from sklearn.ensemble import StackingClassifier
 from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -39,7 +40,7 @@ X_test = scaler.transform(X_test)
 # -----------------------------
 base_learners = [
     ('svm', SVC(probability=True)),
-    ('lr', LogisticRegression(max_iter=500)),
+    ('nb', GaussianNB()),
     ('knn', KNeighborsClassifier()),
     ('cart', DecisionTreeClassifier())
 ]
@@ -47,7 +48,7 @@ base_learners = [
 # -----------------------------
 # Meta learner (Level-1 model)
 # -----------------------------
-meta_learner = RandomForestClassifier(random_state=42)
+meta_learner = LogisticRegression(max_iter=500)
 
 # -----------------------------
 # Stacking Classifier
@@ -77,9 +78,9 @@ print("\nConfusion Matrix:\n", cm)
 
 # Heatmap visualization
 plt.figure(figsize=(10, 8))
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", 
-            xticklabels=np.unique(y), 
-            yticklabels=np.unique(y))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+             xticklabels=np.unique(y),
+             yticklabels=np.unique(y))
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix - Crop Classification")
