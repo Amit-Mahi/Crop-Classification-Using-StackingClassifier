@@ -13,6 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
+
 # -----------------------------
 # Load dataset
 # -----------------------------
@@ -89,3 +90,42 @@ plt.show()
 # Classification Report
 print("\nClassification Report:\n")
 print(classification_report(y_test, y_pred))
+
+
+# -----------------------------
+# Prediction Function
+# -----------------------------
+def recommend_crop(N, P, K, temperature, humidity, ph):
+    """
+    Takes soil and environmental values as input and predicts the best crop.
+    """
+    # Create input array
+    input_data = np.array([[N, P, K, temperature, humidity, ph]])
+    
+    # Scale input
+    input_scaled = scaler.transform(input_data)
+    
+    # Predict crop
+    prediction = stack_clf.predict(input_scaled)
+    return prediction[0]
+
+
+# -----------------------------
+# Interactive Input Section
+# -----------------------------
+if __name__ == "__main__":
+    print("🌱 Crop Recommendation System 🌱")
+    try:
+        N = float(input("Enter Nitrogen value: "))
+        P = float(input("Enter Phosphorus value: "))
+        K = float(input("Enter Potassium value: "))
+        temperature = float(input("Enter Temperature (°C): "))
+        humidity = float(input("Enter Humidity (%): "))
+        ph = float(input("Enter Soil pH: "))
+
+        crop = recommend_crop(N, P, K, temperature, humidity, ph)
+        print(f"\n✅ Recommended Crop: {crop}")
+
+    except Exception as e:
+        print("❌ Error in input. Please enter valid numerical values.")
+        print(e)
